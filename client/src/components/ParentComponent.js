@@ -1,9 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import LogoSearch from "./LogoSearch"; // Adjust the path as necessary
 
 const ParentComponent = () => {
   const [followers, setFollowers] = useState([]); // Store the fetched followers
   const [searchResults, setSearchResults] = useState([]); // Store search results
+
+  // Fetch followers when the component mounts
+  useEffect(() => {
+    const fetchFollowers = async () => {
+      try {
+        const response = await fetch('http://localhost:5000'); // Adjust the endpoint as necessary
+        const data = await response.json();
+        setFollowers(data); // Set followers data
+      } catch (error) {
+        console.error('Error fetching followers:', error); // Log any errors
+      }
+    };
+
+    fetchFollowers();
+  }, []); // Empty dependency array ensures this runs only once
 
   const handleSearch = async (query) => {
     try {

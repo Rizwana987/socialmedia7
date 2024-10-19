@@ -2,17 +2,23 @@
   display: flex;
   gap: 0.75rem;
 }
+
 .Search {
   display: flex;
-  background-color: var(--inputColor);
+  background-color: var(--inputColor); /* Ensure this is defined */
   border-radius: 10px;
   padding: 5px;
 }
-.Search>input {
+
+.Search > input {
   background-color: transparent;
   border: none;
   outline: none;
+  padding: 5px; /* Added padding for better appearance */
+  color: #333; /* Adjust text color */
+  flex-grow: 1; /* Allow input to take up available space */
 }
+
 .s-icon {
   display: flex;
   align-items: center;
@@ -21,4 +27,14 @@
   border-radius: 5px;
   padding: 4px;
   color: white;
+  cursor: pointer; /* Change cursor to pointer for better UX */
+}
+
+.s-icon:hover {
+  opacity: 0.8; /* Add hover effect for better user experience */
+}
+
+.s-icon:disabled {
+  cursor: not-allowed; /* Indicate the button is disabled */
+  opacity: 0.5; /* Reduce opacity when disabled */
 }

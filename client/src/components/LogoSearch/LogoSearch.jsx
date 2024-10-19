@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Logo from "../../img/logo.png";
+import Logo from "../../img/logo.png"; // Adjust the path if needed
 import './LogoSearch.css';
 import { UilSearch } from '@iconscout/react-unicons';
 
@@ -30,7 +30,11 @@ const LogoSearch = ({ onSearch }) => {
           onChange={(e) => setQuery(e.target.value)} // Update query state on input change
           onKeyDown={handleKeyDown} // Listen for key down
         />
-        <div className="s-icon" onClick={handleSearch}> {/* Call handleSearch on icon click */}
+        <div 
+          className="s-icon" 
+          onClick={handleSearch}
+          style={{ cursor: query.trim() ? 'pointer' : 'not-allowed' }} // Change cursor based on query
+        >
           <UilSearch />
         </div>
       </div>
