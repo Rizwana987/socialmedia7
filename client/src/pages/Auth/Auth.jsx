@@ -4,12 +4,14 @@ import Logo from "../../img/logo.png";
 import { logIn, signUp } from "../../actions/AuthActions.js"; // Import both logIn and signUp
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import axios from "axios"; // Import axios for API calls
 
 const Auth = () => {
   const initialState = {
     firstname: "",
     lastname: "",
     username: "",
+    email: "", // Add email to the initial state
     password: "",
     confirmpass: "",
     country: "",
@@ -23,11 +25,13 @@ const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false); // Toggle for signup or login
   const [data, setData] = useState(initialState);
   const [confirmPass, setConfirmPass] = useState(true);
+  const [emailExists, setEmailExists] = useState(false); // State to manage email existence
 
   // Reset Form
   const resetForm = () => {
     setData(initialState);
     setConfirmPass(true);
+    setEmailExists(false); // Reset email existence state
   };
 
   // Handle change in input fields
@@ -65,8 +69,19 @@ const Auth = () => {
     return true;
   };
 
+  // Check if the email already exists
+  const checkEmailExists = async (email) => {
+    try {
+      const response = await axios.get(`/api/check-email?email=${email}`); // Replace with your actual endpoint
+      return response.data.exists; // Assuming the API returns { exists: true/false }
+    } catch (error) {
+      console.error("Error checking email:", error);
+      return false; // In case of error, assume email does not exist
+    }
+  };
+
   // Form Submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     setConfirmPass(true);
     e.preventDefault();
 
@@ -76,6 +91,15 @@ const Auth = () => {
       const isPasswordValid = validatePassword(data.password);
 
       if (!isUsernameValid || !isPasswordValid) return;
+
+      // Check if the email already exists
+      const emailExists = await checkEmailExists(data.email);
+      setEmailExists(emailExists); // Update the email existence state
+
+      if (emailExists) {
+        alert("Email is already registered.");
+        return;
+      }
 
       if (data.password === data.confirmpass) {
         dispatch(signUp(data, navigate));
@@ -129,6 +153,16 @@ const Auth = () => {
                 className="infoInput"
                 name="lastname"
                 value={data.lastname}
+                onChange={handleChange}
+              />
+              {/* Email field */}
+              <input
+                required
+                type="email"
+                placeholder="Email"
+                className="infoInput"
+                name="email"
+                value={data.email}
                 onChange={handleChange}
               />
             </div>
@@ -255,8 +289,8 @@ const Auth = () => {
             >
               {isSignUp ? "Already have an account? Login" : "Don't have an account? Sign Up"}
             </span>
-            <button className="button infoButton" type="Submit" disabled={loading}>
-              {loading ? "Loading..." : isSignUp ? "SignUp" : "Login"}
+            <button className="button infoButton" type="submit" disabled={loading}>
+              {loading ? "Loading..." : isSignUp ? "Sign Up" : "Login"}
             </button>
           </div>
         </form>
